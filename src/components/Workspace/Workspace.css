@@ -1,0 +1,10 @@
+.workspace {
+  margin-left: var(--SIDEBAR-WIDTH);
+  height: 100vh;
+}
+
+@media screen and (max-width: 768px) {
+  .workspace {
+    margin-left: 0;
+  }
+}

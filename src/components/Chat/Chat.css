@@ -1,0 +1,44 @@
+.chat {
+  width: 100%;
+  overflow-y: auto;
+  height: calc(100vh - 150px);
+  padding: 0 20px 0;
+  box-sizing: border-box;
+}
+
+.chat__title {
+  display: block;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: var(--SIDEBAR-WIDTH);
+  right: 0;
+  background: #fff;
+  font-size: 20px;
+  line-height: 1.2;
+  padding: 35px 0 20px 20px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.chat__content {
+  margin-top: 80px;
+}
+
+@media screen and (max-width: 768px) {
+  .chat__title {
+    padding-top: 20px;
+    left: 0;
+    top: 50px;
+  }
+
+  .chat__content {
+    margin-top: 115px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .chat__title {
+    font-size: 16px;
+  }
+}
