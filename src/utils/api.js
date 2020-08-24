@@ -1,6 +1,6 @@
 const config = {
-  workChatUrl: 'https://social-netvork.firebaseio.com/workChat',
-  floodChatUrl: 'https://social-netvork.firebaseio.com/floodChat',
+  workChatUrl: 'https://social-network-55432.firebaseio.com/workChat',
+  floodChatUrl: 'https://social-network-55432.firebaseio.com/floodChat',
   headers: {
     'Content-Type': 'application/json',
   }

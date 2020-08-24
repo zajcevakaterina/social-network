@@ -10,7 +10,6 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
-
   useEffect(scrollToBottom, [scrollDown]);
 
   return (

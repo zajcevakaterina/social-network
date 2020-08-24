@@ -66,7 +66,6 @@ function Workspace() {
   }
 
   // Управление лайками
-
   const handleLike = (messageId, chat) => {
     const message = chat.filter(message => message.messageId === messageId)[0];
     if (!message.likes) {
@@ -168,7 +167,8 @@ function Workspace() {
         .getChat(chatKeyword)
         .then(info => {
           setIsLoading(false);
-          createInitialChat(info, setChatFunction)
+          createInitialChat(info, setChatFunction);
+          setTimeout(() => setScrollDown(!scrollDown), 0)
         })
         .catch(err => console.error(err));
     }

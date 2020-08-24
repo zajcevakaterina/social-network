@@ -34,7 +34,7 @@ function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
         onChange={handleChange}
         value={message}>
       </textarea>
-      <button type="submit" className="message-handler__button" disabled={!message ? true : false}>Отправить</button>
+      <button type="submit" className="message-handler__button" disabled={!message.trim() ? true : false}>Отправить</button>
     </form>
   );
 }
