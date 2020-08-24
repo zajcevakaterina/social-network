@@ -29,8 +29,8 @@ function Message({ author, avatar, text, likes, messageId, onEditClick, onDelete
         <div className="message__top-info">
           <p className="message__author">{author.name}</p>
           <div className="message__handlers">
-           { canEditAndDelete && <button className="message__button message__button_edit" onClick={handleEditClick}></button> }
-           { canEditAndDelete && <button className="message__button message__button_delete" onClick={handleDeleteClick}></button> }
+            {canEditAndDelete && <button className="message__button message__button_edit" onClick={handleEditClick}></button>}
+            {canEditAndDelete && <button className="message__button message__button_delete" onClick={handleDeleteClick}></button>}
             <div className="message__likes">
               <button className={`message__button message__button_like ${isLiked ? 'message__button_like-active' : ''} `} onClick={handleLikeClick}></button>
               <span className="message__like-count">{likes && likes.length}</span>
@@ -45,13 +45,16 @@ function Message({ author, avatar, text, likes, messageId, onEditClick, onDelete
 }
 
 Message.propTypes = {
-  author: PropTypes.object, 
+  author: PropTypes.object,
   avatar: PropTypes.string,
-  text: PropTypes.string, 
-  likes: PropTypes.array,
-  messageId: PropTypes.number,
+  text: PropTypes.string,
+  likes: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.number,
+  ]),
+  messageId: PropTypes.string,
   onEditClick: PropTypes.func,
-  onDeleteClick: PropTypes.func, 
+  onDeleteClick: PropTypes.func,
   onLikeClick: PropTypes.func
 }
 

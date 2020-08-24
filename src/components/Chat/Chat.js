@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import Message from '../Message/Message';
+import Preloader from '../Preloader/Preloader'
 import './Chat.css';
 
-function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scrollDown }) {
-  console.log(messages)
+function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scrollDown, isLoading }) {
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -17,21 +17,27 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
     <div className="chat">
       <h2 className="chat__title">{title}</h2>
       <div className="chat__content">
-        {messages && messages.map((message) => {
-          return (
-            <Message
-              key={message.messageId}
-              messageId={message.messageId}
-              author={message.author}
-              avatar={message.author.avatar}
-              text={message.message}
-              likes={message.likes}
-              onEditClick={onEditClick}
-              onDeleteClick={onDeleteClick}
-              onLikeClick={onLikeClick}
-            />
-          )
-        })}
+
+        {isLoading ?
+          <div className="chat__preloader">
+            <Preloader />
+          </div>
+          :
+          messages && messages.map((message) => {
+            return (
+              <Message
+                key={message.messageId}
+                messageId={message.messageId}
+                author={message.author}
+                avatar={message.author.avatar}
+                text={message.message}
+                likes={message.likes || 0}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+                onLikeClick={onLikeClick}
+              />
+            )
+          })}
       </div>
 
       <div ref={messagesEndRef} />

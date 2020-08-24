@@ -1,7 +1,8 @@
 {
-  "workChat": [
-    {
-      "messageId": 123,
+  "workChat": {
+    "_6ytl6d2hi": {
+      "ts":"1598268287",
+      "messageId": "_6ytl6d2hi",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -21,8 +22,9 @@
         }
       ]
     },
-    {
-      "messageId": 124,
+    "_6ytl54d2ho": {
+      "ts": "1598268407",
+      "messageId": "_6ytl54d2ho",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -42,8 +44,9 @@
         }
       ]
     },
-    {
-      "messageId": 125,
+    "_375987l6d2hi": {
+      "ts": "1598268647",
+      "messageId": "_375987l6d2hi",
       "author": {
         "id": 235,
         "name": "Вася Пупкин",
@@ -63,8 +66,9 @@
         }
       ]
     },
-    {
-      "messageId": 126,
+    "_l6ddffii": {
+      "ts":"1598268707",
+      "messageId": "_l6ddffii",
       "author": {
         "id": 236,
         "name": "Петя Петров",
@@ -79,8 +83,9 @@
         }
       ]
     },
-    {
-      "messageId": 127,
+    "_66d849982hi": {
+      "ts": "1598268947",
+      "messageId": "_66d849982hi",
       "author": {
         "id": 236,
         "name": "Петя Петров",
@@ -95,8 +100,9 @@
         }
       ]
     },
-    {
-      "messageId": 128,
+    "_265hhd2hi": {
+      "ts": "1598269247",
+      "messageId": "_265hhd2hi",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -105,8 +111,9 @@
       "message": "Проверка на длинный текст: ",
       "likes": []
     },
-    {
-      "messageId": 129,
+    "_6ytl95jki": {
+      "ts": "1598269367",
+      "messageId": "_6ytl95jki",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -115,8 +122,9 @@
       "message": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim est laborum.",
       "likes": []
     },
-    {
-      "messageId": 130,
+    "_44543vftl6d2hi": {
+      "ts": "1598269547",
+      "messageId": "_44543vftl6d2hi",
       "author": {
         "id": 235,
         "name": "Вася Пупкин",
@@ -131,8 +139,9 @@
         }
       ]
     },
-    {
-      "messageId": 131,
+    "_6ytljgrgnrj73": {
+      "ts": " 1598269607",
+      "messageId": "_6ytljgrgnrj73",
       "author": {
         "id": 235,
         "name": "Вася Пупкин",
@@ -147,8 +156,9 @@
         }
       ]
     },
-    {
-      "messageId": 132,
+    "_6ytlgtw35": {
+      "ts": "1598269727",
+      "messageId": "_6ytlgtw35",
       "author": {
         "id": 235,
         "name": "Вася Пупкин",
@@ -163,10 +173,11 @@
         }
       ]
     }
-  ],
-  "floodChat": [
-    {
-      "messageId": 223,
+  },
+  "floodChat": {
+    "_262dpl6d2hi": {
+      "ts": "1598269727",
+      "messageId": "_262dpl6d2hi",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -186,8 +197,9 @@
         }
       ]
     },
-    {
-      "messageId": 224,
+    "_6y2424jnjihi": {
+      "ts": "1598269847",
+      "messageId": "_6y2424jnjihi",
       "author": {
         "id": 234,
         "name": "Екатерина Зайцева",
@@ -202,8 +214,9 @@
         }
       ]
     },
-    {
-      "messageId": 225,
+    "_4y56d2hi": {
+      "ts": "1598269967",
+      "messageId": "_4y56d2hi",
       "author": {
         "id": 235,
         "name": "Вася Пупкин",
@@ -223,8 +236,9 @@
         }
       ]
     },
-    {
-      "messageId": 226,
+    "_4535ytl6d2hi": {
+      "ts": "1598270027",
+      "messageId": "_4535ytl6d2hi",
       "author": {
         "id": 236,
         "name": "Петя Петров",
@@ -239,5 +253,5 @@
         }
       ]
     }
-  ]
+  }
 }

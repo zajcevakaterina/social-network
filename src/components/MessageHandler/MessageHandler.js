@@ -2,16 +2,16 @@ import React, { useState, useEffect } from 'react';
 import './MessageHandler.css';
 import PropTypes from 'prop-types';
 
-function MessageHandler({ onAddMessage, messageToEdit, onEditMessage}) {
+function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
   const [message, setMessage] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(messageToEdit) {
+    if (messageToEdit) {
       onEditMessage(message)
     } else {
-    onAddMessage(message);
-    setMessage('');
+      onAddMessage(message);
+      setMessage('');
     }
   }
 

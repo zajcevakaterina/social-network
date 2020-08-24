@@ -1,14 +1,15 @@
 const config = {
-  baseUrl: 'https://social-netvork.firebaseio.com/',
+  workChatUrl: 'https://social-netvork.firebaseio.com/workChat',
+  floodChatUrl: 'https://social-netvork.firebaseio.com/floodChat',
   headers: {
-  //   authorization: 'ac8eea58-1ab3-4780-8fbf-f684bd9ab1b3',
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 };
 
 class Api {
   constructor(options) {
-    this.baseUrl = options.baseUrl;
+    this.workChatUrl = options.workChatUrl;
+    this.floodChatUrl = options.floodChatUrl;
     this.headers = options.headers;
   }
 
@@ -26,92 +27,82 @@ class Api {
     return Promise.reject(error.message)
   }
 
-  getWorkChat() {
-    return fetch(`${this.baseUrl}/workChat.json`, {
-      headers: this.headers
-    })
-      .then(this._handleResponse)
-      .catch(this._handleResponseError);
+  getChat(chatType) {
+    if (chatType === 'work') {
+      return fetch(`${this.workChatUrl}.json`, {
+        method: 'GET',
+        headers: this.headers
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    } else {
+      return fetch(`${this.floodChatUrl}.json`, {
+        method: 'GET',
+        headers: this.headers
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    }
   }
 
-  getFloodChat() {
-    return fetch(`${this.baseUrl}/floodChat.json`, {
-      headers: this.headers
-    })
-      .then(this._handleResponse)
-      .catch(this._handleResponseError);
-  }
-
-  // setUserInfo(name, job) {
-  //   return fetch(`${this.baseUrl}/users/me`, {
-  //     method: 'PATCH',
-  //     headers: this.headers,
-  //     body: JSON.stringify({
-  //       name: name,
-  //       about: job,
-  //     })
-  //   })
-  //     .then(this._handleResponse)
-  //     .catch(this._handleResponseError)
-  // }
-
-  // setUserAvatar(link) {
-  //   return fetch(`${this.baseUrl}/users/me/avatar`, {
-  //     method: 'PATCH',
-  //     headers: this.headers,
-  //     body: JSON.stringify({
-  //       avatar: link
-  //     })
-  //   })
-  //     .then(this._handleResponse)
-  //     .catch(this._handleResponseError)
-  // }
-
-  // getInitialCards() {
-  //   return fetch(`${this.baseUrl}/cards`, {
-  //     headers: this.headers
-  //   })
-  //     .then(this._handleResponse)
-  //     .catch(this._handleResponseError);
-  // }
-
-  addWorkMessage(message) {
+  addMessage(message, chatType) {
     const body = JSON.stringify(message);
-    console.log(body)
-    return fetch(`${this.baseUrl}/workChat.json`, {
-      method: 'POST',
-      body: body
-    })
-      .then(this._handleResponse)
-      .catch(this._handleResponseError);
+    if (chatType === 'work') {
+      return fetch(`${this.workChatUrl}/${message.messageId}.json`, {
+        method: 'PUT',
+        body: body
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    } else {
+      return fetch(`${this.floodChatUrl}/${message.messageId}.json`, {
+        method: 'PUT',
+        body: body
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    }
   }
 
-  // deleteCard(cardId) {
-  //   return fetch(`${this.baseUrl}/cards/${cardId}`, {
-  //     method: 'DELETE',
-  //     headers: this.headers,
-  //   })
-  //     .then(this._handleResponse)
-  //     .catch(this._handleResponseError);
-  // }
+  deleteMessage(messageId, chatType) {
+    if (chatType === 'work') {
+      return fetch(`${this.workChatUrl}/${messageId}.json`, {
+        method: 'DELETE',
+        headers: this.headers,
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    } else {
+      return fetch(`${this.floodChatUrl}/${messageId}.json`, {
+        method: 'DELETE',
+        headers: this.headers,
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    }
+  }
 
-  // changeLikeCardStatus(cardId, isLiked) {
-  //   if (isLiked) {
-  //     return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-  //       method: 'PUT',
-  //       headers: this.headers,
-  //     })
-  //       .then(this._handleResponse)
-  //       .catch(this._handleResponseError);
-  //   }
-  //   return fetch(`${this.baseUrl}/cards/likes/${cardId}`, {
-  //     method: 'DELETE',
-  //     headers: this.headers,
-  //   })
-  //     .then(this._handleResponse)
-  //     .catch(this._handleResponseError);
-  // }
+  changeMessage(message, chatType) {
+    const body = JSON.stringify(message);
 
+    if (chatType === 'work') {
+      return fetch(`${this.workChatUrl}/${message.messageId}.json`, {
+        method: 'PUT',
+        headers: this.headers,
+        body: body
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    } else {
+      return fetch(`${this.floodChatUrl}/${message.messageId}.json`, {
+        method: 'PUT',
+        headers: this.headers,
+        body: body
+      })
+        .then(this._handleResponse)
+        .catch(this._handleResponseError);
+    }
+  }
 }
 
 const api = new Api(config);

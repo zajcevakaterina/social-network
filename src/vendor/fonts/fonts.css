@@ -17,13 +17,3 @@
   font-style: normal;
   font-weight: 500;
 }
-
-@font-face {
-  src: url(./Black/Inter-Black.woff) format('woff');
-  src: url(./Black/Inter-Black.woff2) format('woff2');
-  src: url(./Black/Inter-Black.ttf) format('truetype');
-  src: url(./Black/Inter-Black.otf) format('opentype');
-  font-family: 'Inter';
-  font-style: normal;
-  font-weight: 900;
-}

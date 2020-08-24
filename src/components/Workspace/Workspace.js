@@ -4,43 +4,38 @@ import { Route, useLocation } from 'react-router-dom'
 import Chat from '../Chat/Chat';
 import MessageHandler from '../MessageHandler/MessageHandler';
 import { CurrentUserContext, currentUser } from '../../contexts/CurrentUserContext';
-import { initialWorkChat, initialFloodChat } from '../../utils/chats'
-import api from '../../utils/api'
-
-let workMessageId = 132; // эмуляция создания уникальных id
-let floodMessageId = 232;
+import api from '../../utils/api';
 
 function Workspace() {
   let { pathname } = useLocation();
 
-  const [workMessageId, setWorkMessageId] = useState(135);
-
   const [workChat, setWorkChat] = useState(null)
-
   const [floodChat, setFloodChat] = useState(null)
-
   const [messageToEdit, setMessageToEdit] = useState({
     messageId: '',
     message: ''
   })
-
   const [scrollDown, setScrollDown] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // редактирование сообщений
-  const onEditWorkChat = (messageId) => {
-    onEditMessage(messageId, workChat)
-  }
+  function generateId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
 
-  const onEditFloodChat = (messageId) => {
-    onEditMessage(messageId, floodChat)
-  }
-
+  // Редактирование сообщений
   const onEditMessage = (messageId, chat) => {
     const message = chat.filter((message => message.messageId === messageId))[0].message;
     setMessageToEdit({ ...messageToEdit, message: message, messageId: messageId });
   }
 
-  const createUpdatedMessage = (text, chat) => {
+  const updateMessage = (text, chat) => {
+    const messageToUpdate = chat.filter(messageItem => messageItem.messageId === messageToEdit.messageId)[0];
+    return {
+      ...messageToUpdate, message: text
+    }
+  }
+
+  const updateChat = (text, chat) => {
     return chat.map((messageItem) => {
       if (messageItem.messageId === messageToEdit.messageId) {
         return {
@@ -51,56 +46,63 @@ function Workspace() {
     });
   }
 
+  const editMessageHandler = (text, chat, chatKeyword, setChatFunction) => {
+    const newMessage = updateMessage(text, chat)
+    api.changeMessage(newMessage, chatKeyword)
+      .then(() => {
+        const newChat = updateChat(text, chat)
+        setChatFunction(newChat);
+      })
+      .catch(err => console.error(err))
+  }
+
   const onEditMessageSubmit = (text) => {
     if (pathname === '/floodchat') {
-      const newFloodChat = createUpdatedMessage(text, floodChat)
-      setFloodChat(newFloodChat);
+      editMessageHandler(text, floodChat, 'flood', setFloodChat)
     } else {
-      const newWorkChat = createUpdatedMessage(text, workChat)
-      setWorkChat(newWorkChat);
+      editMessageHandler(text, workChat, 'work', setWorkChat)
     }
     setMessageToEdit({ messageToEdit, message: '', messageId: '' });
   }
 
-  // управление лайками
-  const handleLike = (messageId, likes, chat) => {
-    const isLiked = likes.some(item => item.id === currentUser.id);
-    let newChat = null;
-    if (!isLiked) {
-      newChat = chat.map(messageItem => {
-        if (messageItem.messageId === messageId) {
-          const newLikes = [...messageItem.likes];
-          newLikes.push(currentUser);
-          return { ...messageItem, likes: newLikes }
-        } return messageItem;
-      })
-    } else {
-      newChat = chat.map(messageItem => {
-        if (messageItem.messageId === messageId) {
-          const newLikes = [...messageItem.likes];
-          for (let i = 0; i < newLikes.length; i++) {
-            newLikes[i].id === currentUser.id && newLikes.splice(i, 1)
-          }
-          return { ...messageItem, likes: newLikes }
-        } return messageItem;
-      })
+  // Управление лайками
+
+  const handleLike = (messageId, chat) => {
+    const message = chat.filter(message => message.messageId === messageId)[0];
+    if (!message.likes) {
+      message.likes = []
     }
-    return newChat
+    const isLiked = message.likes.some(item => item.id === currentUser.id);
+    if (!isLiked) {
+      message.likes.push(currentUser);
+    } else {
+      for (let i = 0; i < message.likes.length; i++) {
+        message.likes[i].id === currentUser.id && message.likes.splice(i, 1)
+      }
+    }
+    return message
   }
 
-  const handleWorkLikeClick = (messageId, likes) => {
-    const newChat = handleLike(messageId, likes, workChat)
-    // localStorage.setItem('messages', JSON.stringify(messages))
-    // JSON.parse(localStorage.getItem('messages'));
-    setWorkChat(newChat);
+  const createNewChat = (message, chat) => {
+    return chat.map(messageItem => {
+      if (messageItem.messageId === message.messageId) {
+        return message;
+      }
+      return messageItem;
+    })
   }
 
-  const handleFloodLikeClick = (messageId, likes) => {
-    const newChat = handleLike(messageId, likes, floodChat)
-    setFloodChat(newChat);
+  const handleLikeClick = (messageId, chat, chatKeyword, setChatFunction) => {
+    const newMessage = handleLike(messageId, chat);
+    api.changeMessage(newMessage, chatKeyword)
+      .then(() => {
+        const newChat = createNewChat(newMessage, chat);
+        setChatFunction(newChat);
+      })
+      .catch(err => console.error(err))
   }
 
-  // удаление сообщений
+  // Удаление сообщений
   const deleteMessage = (messageId, chat) => {
     const newChat = chat.slice();
     for (let i = 0; i < newChat.length; i++) {
@@ -111,61 +113,67 @@ function Workspace() {
     return newChat
   }
 
-  const onDeleteWorkMessage = (messageId) => {
-    const newWorkChat = deleteMessage(messageId, workChat);
-    setWorkChat(newWorkChat);
+  const handleDeleteMessage = (messageId, chatKeyword, chat, setChatFunction) => {
+    api.deleteMessage(messageId, chatKeyword)
+      .then(() => {
+        const newChat = deleteMessage(messageId, chat);
+        setChatFunction(newChat);
+      })
+      .catch(err => console.error(err))
   }
 
-  const onDeleteFloodMessage = (messageId) => {
-    const newFloodChat = deleteMessage(messageId, floodChat);
-    setFloodChat(newFloodChat);
-  }
-
-  // создание сообщений
+  // Создание сообщений
   const createMessage = (text, messageId) => {
+    const date = new Date();
+    const timeStamp = date.getTime() / 1000;
     return {
       messageId: messageId,
       author: currentUser,
       likes: [],
       message: text,
+      ts: timeStamp
     }
   }
 
-  const onAddMessage = (text) => {
-    if (pathname === '/floodchat') {
-      floodMessageId += 1;
-      const message = createMessage(text, floodMessageId)
-      // setFloodChat([...floodChat, message])
-    } else {
-      // workMessageId += 1;
-      setWorkMessageId(workMessageId + 1);
-      const message = createMessage(text, workMessageId);
-      console.log(message);
-      api.addWorkMessage(message)
-      .then((newChat) => {
-
-      console.log(Object.values(newChat))
-      console.log(newChat);
+  const handleAddMessage = (text, messageId, chatKeyword, chat, setChatFunction) => {
+    const message = createMessage(text, messageId);
+    api.addMessage(message, chatKeyword)
+      .then(() => {
+        setChatFunction([...chat, message])
       })
       .catch(err => console.error(err))
-      setWorkChat([...workChat, message])
+  }
+
+  const onAddMessage = (text) => {
+    const messageId = generateId();
+    if (pathname === '/floodchat') {
+      handleAddMessage(text, messageId, 'flood', floodChat, setFloodChat);
+    } else {
+      handleAddMessage(text, messageId, 'work', workChat, setWorkChat)
     }
     setScrollDown(!scrollDown);
   }
 
-  useEffect(() => {
-    api
-      .getWorkChat()
-      .then(info => {
-        const chat = Object.values(info);
-        setWorkChat(chat)
-      })
-      .catch(err => console.error(err));
+  const createInitialChat = (info, setChatFunction) => {
+    const chat = Object.values(info);
+    chat.sort((a, b) => {
+      return (+a.ts) - (+b.ts)
+    });
+    setChatFunction(chat)
+  }
 
-    api
-      .getFloodChat()
-      .then(info => setFloodChat(info))
-      .catch(err => console.error(err));
+  useEffect(() => {
+    const getInitialChat = (chatKeyword, setChatFunction) => {
+      api
+        .getChat(chatKeyword)
+        .then(info => {
+          setIsLoading(false);
+          createInitialChat(info, setChatFunction)
+        })
+        .catch(err => console.error(err));
+    }
+    getInitialChat('work', setWorkChat);
+    getInitialChat('flood', setFloodChat);
   }, [])
 
   return (
@@ -175,10 +183,11 @@ function Workspace() {
           <Chat
             messages={workChat}
             title={'Рабочий чат'}
-            onEditClick={onEditWorkChat}
-            onDeleteClick={onDeleteWorkMessage}
-            onLikeClick={handleWorkLikeClick}
+            onEditClick={(messageId) => onEditMessage(messageId, workChat)}
+            onDeleteClick={(messageId) => handleDeleteMessage(messageId, 'work', workChat, setWorkChat)}
+            onLikeClick={(messageId) => handleLikeClick(messageId, workChat, 'work', setWorkChat)}
             scrollDown={scrollDown}
+            isLoading={isLoading}
           />
         </CurrentUserContext.Provider>
       </Route>
@@ -187,14 +196,14 @@ function Workspace() {
           <Chat
             messages={floodChat}
             title={'Флудилка'}
-            onEditClick={onEditFloodChat}
-            onDeleteClick={onDeleteFloodMessage}
-            onLikeClick={handleFloodLikeClick}
+            onEditClick={(messageId) => onEditMessage(messageId, floodChat)}
+            onDeleteClick={(messageId) => handleDeleteMessage(messageId, 'flood', floodChat, setFloodChat)}
+            onLikeClick={(messageId) => handleLikeClick(messageId, floodChat, 'flood', setFloodChat)}
             scrollDown={scrollDown}
+            chat={isLoading}
           />
         </CurrentUserContext.Provider>
       </Route>
-
       <MessageHandler
         onAddMessage={onAddMessage}
         messageToEdit={messageToEdit.message}
