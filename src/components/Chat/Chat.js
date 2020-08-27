@@ -10,6 +10,11 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
   }
+
+  function generateId() {
+    return '_' + Math.random().toString(36).substr(2, 9);
+  };
+
   useEffect(scrollToBottom, [scrollDown]);
 
   return (
@@ -25,7 +30,7 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
           messages && messages.map((message) => {
             return (
               <Message
-                key={message.messageId}
+                key={message.messageId || generateId()}
                 messageId={message.messageId}
                 authorName={message.author && message.author.name || 'Неавторизованный пользователь, который пока еще может так делать :)'}
                 authorId={message.author && message.author.id || 256}
