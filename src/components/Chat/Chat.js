@@ -23,33 +23,20 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
           </div>
           :
           messages && messages.map((message) => {
-
-            if (message.author) {
-              return (
-                <Message
-                  key={message.messageId}
-                  messageId={message.messageId}
-                  author={message.author}
-                  avatar={message.author.avatar}
-                  text={message.message}
-                  likes={message.likes || 0}
-                  onEditClick={onEditClick}
-                  onDeleteClick={onDeleteClick}
-                  onLikeClick={onLikeClick}
-                />
-              )
-            } else {
-              return <Message 
-              author={{
-                avatar: 'https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-user-1.png',
-                id: 250,
-                name: 'Неизвестный автор'
-              }}
-              avatar='https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-user-1.png' 
-              text='Скрытое сообщение от неавторизованного пользователя'
-              likes = {false} 
-              messageId='undefined'/>
-            }
+            return (
+              <Message
+                key={message.messageId}
+                messageId={message.messageId}
+                authorName={message.author && message.author.name || 'Неавторизованный пользователь, который пока еще может так делать :)'}
+                authorId={message.author && message.author.id || 256}
+                avatar={message.author && message.author.avatar || 'https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-user-1.png'}
+                text={message.message}
+                likes={message.likes || 0}
+                onEditClick={onEditClick}
+                onDeleteClick={onDeleteClick}
+                onLikeClick={onLikeClick}
+              />
+            )
           })}
       </div>
 
