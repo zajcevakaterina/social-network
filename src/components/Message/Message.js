@@ -28,7 +28,7 @@ function Message({ author, avatar, text, likes, messageId, onEditClick, onDelete
       <div className="message__content">
         <div className="message__top-info">
           <p className="message__author">{author.name}</p>
-          <div className="message__handlers">
+          {likes !== false && <div className="message__handlers">
             {canEditAndDelete && <button className="message__button message__button_edit" onClick={handleEditClick}></button>}
             {canEditAndDelete && <button className="message__button message__button_delete" onClick={handleDeleteClick}></button>}
             <div className="message__likes">
@@ -36,13 +36,14 @@ function Message({ author, avatar, text, likes, messageId, onEditClick, onDelete
               <span className="message__like-count">{likes && likes.length}</span>
             </div>
           </div>
+          }
         </div>
         <p className="message__text">{text}</p>
       </div>
-
     </div>
   );
 }
+
 
 Message.propTypes = {
   author: PropTypes.object,
@@ -51,6 +52,7 @@ Message.propTypes = {
   likes: PropTypes.oneOfType([
     PropTypes.array,
     PropTypes.number,
+    PropTypes.bool
   ]),
   messageId: PropTypes.string,
   onEditClick: PropTypes.func,
