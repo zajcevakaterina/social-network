@@ -8,14 +8,17 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
   }
 
   function generateId() {
     return '_' + Math.random().toString(36).substr(2, 9);
   };
 
-  useEffect(scrollToBottom, [scrollDown]);
+  useEffect(() => {
+    console.log('вызвался скролл')
+    scrollToBottom()
+  }, [scrollDown]);
 
   return (
     <div className="chat">
@@ -35,7 +38,7 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
                 authorName={message.author && message.author.name || 'Неавторизованный пользователь, который пока еще может так делать :)'}
                 authorId={message.author && message.author.id || 256}
                 avatar={message.author && message.author.avatar || 'https://cdns.iconmonstr.com/wp-content/assets/preview/2012/240/iconmonstr-user-1.png'}
-                text={message.message}
+                text={message.message || 'Сообщение скрыто'}
                 likes={message.likes || 0}
                 onEditClick={onEditClick}
                 onDeleteClick={onDeleteClick}
