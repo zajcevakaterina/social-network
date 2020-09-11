@@ -1,17 +1,27 @@
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import React, { useEffect, useRef } from 'react';
 import Message from '../Message/Message';
 import Preloader from '../Preloader/Preloader'
 import './Chat.css';
 
-function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scrollDown, isLoading }) {
-  const messagesEndRef = useRef(null);
+interface ChatProps {
+  messages: any[] | null,
+  title: string,
+  onEditClick(messageId: string): void, 
+  onDeleteClick(messageId: string): void, 
+  onLikeClick(messageId: string): void, 
+  scrollDown: boolean,
+  isLoading: boolean
+}
+
+const Chat:React.FC<ChatProps> = ({ messages, title, onEditClick, onDeleteClick, onLikeClick, scrollDown, isLoading }) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" })
+    messagesEndRef.current!.scrollIntoView({ behavior: "smooth", block: "end" })
   }
 
-  function generateId() {
+  const generateId = () => {
     return '_' + Math.random().toString(36).substr(2, 9);
   };
 
@@ -53,13 +63,13 @@ function Chat({ messages, title, onEditClick, onDeleteClick, onLikeClick, scroll
   );
 }
 
-Chat.propTypes = {
-  messages: PropTypes.array,
-  title: PropTypes.string,
-  onEditClick: PropTypes.func,
-  onDeleteClick: PropTypes.func,
-  onLikeClick: PropTypes.func,
-  scrollDown: PropTypes.bool
-}
+// Chat.propTypes = {
+//   messages: PropTypes.array,
+//   title: PropTypes.string,
+//   onEditClick: PropTypes.func,
+//   onDeleteClick: PropTypes.func,
+//   onLikeClick: PropTypes.func,
+//   scrollDown: PropTypes.bool
+// }
 
 export default Chat;

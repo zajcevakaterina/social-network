@@ -5,12 +5,13 @@ import Chat from '../Chat/Chat';
 import MessageHandler from '../MessageHandler/MessageHandler';
 import { CurrentUserContext, currentUser } from '../../contexts/CurrentUserContext';
 import api from '../../utils/api';
+import { IAuthor, IMessageItem, IInitialChat } from '../../utils/interfaces'
 
-function Workspace() {
+const Workspace: React.FC = () => {
   let { pathname } = useLocation();
 
-  const [workChat, setWorkChat] = useState(null)
-  const [floodChat, setFloodChat] = useState(null)
+  const [workChat, setWorkChat] = useState([])
+  const [floodChat, setFloodChat] = useState([])
   const [messageToEdit, setMessageToEdit] = useState({
     messageId: '',
     message: ''
@@ -23,19 +24,19 @@ function Workspace() {
   };
 
   // Редактирование сообщений
-  const onEditMessage = (messageId, chat) => {
+  const onEditMessage = (messageId: string, chat: IMessageItem[]) => {
     const message = chat.filter((message => message.messageId === messageId))[0].message;
     setMessageToEdit({ ...messageToEdit, message: message, messageId: messageId });
   }
 
-  const updateMessage = (text, chat) => {
+  const updateMessage = (text: string, chat: IMessageItem[]) => {
     const messageToUpdate = chat.filter(messageItem => messageItem.messageId === messageToEdit.messageId)[0];
     return {
       ...messageToUpdate, message: text
     }
   }
 
-  const updateChat = (text, chat) => {
+  const updateChat = (text: string, chat: IMessageItem[]) => {
     return chat.map((messageItem) => {
       if (messageItem.messageId === messageToEdit.messageId) {
         return {
@@ -46,7 +47,8 @@ function Workspace() {
     });
   }
 
-  const editMessageHandler = (text, chat, chatKeyword, setChatFunction) => {
+  // посмотреть откуда ниже в чате нулл
+  const editMessageHandler = (text: string, chat: IMessageItem[], chatKeyword: string, setChatFunction: any) => {
     const newMessage = updateMessage(text, chat)
     api.changeMessage(newMessage, chatKeyword)
       .then(() => {
@@ -56,22 +58,22 @@ function Workspace() {
       .catch(err => console.error(err))
   }
 
-  const onEditMessageSubmit = (text) => {
+  const onEditMessageSubmit = (text: string) => {
     if (pathname === '/floodchat') {
       editMessageHandler(text, floodChat, 'flood', setFloodChat)
     } else {
       editMessageHandler(text, workChat, 'work', setWorkChat)
     }
-    setMessageToEdit({ messageToEdit, message: '', messageId: '' });
+    setMessageToEdit({ ...messageToEdit, message: '', messageId: '' });
   }
 
   // Управление лайками
-  const handleLike = (messageId, chat) => {
+  const handleLike = (messageId: string, chat: IMessageItem[]) => {
     const message = chat.filter(message => message.messageId === messageId)[0];
     if (!message.likes) {
       message.likes = []
     }
-    const isLiked = message.likes.some(item => item.id === currentUser.id);
+    const isLiked = message.likes.some((item: IAuthor) => item.id === currentUser.id);
     if (!isLiked) {
       message.likes.push(currentUser);
     } else {
@@ -82,7 +84,7 @@ function Workspace() {
     return message
   }
 
-  const createNewChat = (message, chat) => {
+  const createNewChat = (message: IMessageItem, chat: IMessageItem[]) => {
     return chat.map(messageItem => {
       if (messageItem.messageId === message.messageId) {
         return message;
@@ -91,7 +93,7 @@ function Workspace() {
     })
   }
 
-  const handleLikeClick = (messageId, chat, chatKeyword, setChatFunction) => {
+  const handleLikeClick = (messageId: string, chat: IMessageItem[], chatKeyword: string, setChatFunction: any) => {
     const newMessage = handleLike(messageId, chat);
     api.changeMessage(newMessage, chatKeyword)
       .then(() => {
@@ -102,7 +104,7 @@ function Workspace() {
   }
 
   // Удаление сообщений
-  const deleteMessage = (messageId, chat) => {
+  const deleteMessage = (messageId: string, chat: IMessageItem[]) => {
     const newChat = chat.slice();
     for (let i = 0; i < newChat.length; i++) {
       if (newChat[i].messageId === messageId) {
@@ -112,7 +114,7 @@ function Workspace() {
     return newChat
   }
 
-  const handleDeleteMessage = (messageId, chatKeyword, chat, setChatFunction) => {
+  const handleDeleteMessage = (messageId: string, chatKeyword: string, chat: IMessageItem[], setChatFunction: any) => {
     api.deleteMessage(messageId, chatKeyword)
       .then(() => {
         const newChat = deleteMessage(messageId, chat);
@@ -122,7 +124,7 @@ function Workspace() {
   }
 
   // Создание сообщений
-  const createMessage = (text, messageId) => {
+  const createMessage = (text: string, messageId: string) => {
     const date = new Date();
     const timeStamp = date.getTime() / 1000;
     return {
@@ -134,7 +136,7 @@ function Workspace() {
     }
   }
 
-  const handleAddMessage = (text, messageId, chatKeyword, chat, setChatFunction) => {
+  const handleAddMessage = (text: string, messageId: string, chatKeyword: string, chat: IMessageItem[], setChatFunction: any) => {
     const message = createMessage(text, messageId);
     api.addMessage(message, chatKeyword)
       .then(() => {
@@ -143,7 +145,7 @@ function Workspace() {
       .catch(err => console.error(err))
   }
 
-  const onAddMessage = (text) => {
+  const onAddMessage = (text: string) => {
     const messageId = generateId();
     if (pathname === '/floodchat') {
       handleAddMessage(text, messageId, 'flood', floodChat, setFloodChat);
@@ -153,7 +155,7 @@ function Workspace() {
     setScrollDown(!scrollDown);
   }
 
-  const createInitialChat = (info, setChatFunction) => {
+  const createInitialChat = (info: IInitialChat, setChatFunction: any) => {
     const chat = Object.values(info);
     chat.sort((a, b) => {
       return (+a.ts) - (+b.ts)
@@ -162,7 +164,7 @@ function Workspace() {
   }
 
   useEffect(() => {
-    const getInitialChat = (chatKeyword, setChatFunction) => {
+    const getInitialChat = (chatKeyword: string, setChatFunction: any) => {
       api
         .getChat(chatKeyword)
         .then(info => {
@@ -200,7 +202,7 @@ function Workspace() {
             onDeleteClick={(messageId) => handleDeleteMessage(messageId, 'flood', floodChat, setFloodChat)}
             onLikeClick={(messageId) => handleLikeClick(messageId, floodChat, 'flood', setFloodChat)}
             scrollDown={scrollDown}
-            chat={isLoading}
+            isLoading={isLoading}
           />
         </CurrentUserContext.Provider>
       </Route>

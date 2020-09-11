@@ -1,3 +1,5 @@
+import { IMessageItem } from './interfaces'
+
 const config = {
   workChatUrl: 'https://social-network-55432.firebaseio.com/workChat',
   floodChatUrl: 'https://social-network-55432.firebaseio.com/floodChat',
@@ -6,14 +8,25 @@ const config = {
   }
 };
 
+type Options = {
+  workChatUrl: string,
+  floodChatUrl: string,
+  headers:  {
+    'Content-Type': string,
+  }
+}
+
 class Api {
-  constructor(options) {
+  workChatUrl: string;
+  floodChatUrl: string;
+  headers: Headers | string[][] | { [key: string]: string; };
+  constructor(options: Options) {
     this.workChatUrl = options.workChatUrl;
     this.floodChatUrl = options.floodChatUrl;
     this.headers = options.headers;
   }
 
-  _handleResponse(response) {
+  _handleResponse(response: any) {
     if (response.ok) {
       return response.json();
     } else {
@@ -22,12 +35,12 @@ class Api {
     }
   }
 
-  _handleResponseError(error) {
+  _handleResponseError(error: Error) {
     console.log(`Ошибка: ${error.message}`)
     return Promise.reject(error.message)
   }
 
-  getChat(chatType) {
+  getChat(chatType: string) {
     if (chatType === 'work') {
       return fetch(`${this.workChatUrl}.json`, {
         method: 'GET',
@@ -45,7 +58,7 @@ class Api {
     }
   }
 
-  addMessage(message, chatType) {
+  addMessage(message:IMessageItem, chatType: string) {
     const body = JSON.stringify(message);
     if (chatType === 'work') {
       return fetch(`${this.workChatUrl}/${message.messageId}.json`, {
@@ -64,7 +77,7 @@ class Api {
     }
   }
 
-  deleteMessage(messageId, chatType) {
+  deleteMessage(messageId: string, chatType: string) {
     if (chatType === 'work') {
       return fetch(`${this.workChatUrl}/${messageId}.json`, {
         method: 'DELETE',
@@ -82,7 +95,7 @@ class Api {
     }
   }
 
-  changeMessage(message, chatType) {
+  changeMessage(message:IMessageItem, chatType: string) {
     const body = JSON.stringify(message);
 
     if (chatType === 'work') {
