@@ -2,10 +2,9 @@ import React from 'react';
 import './Navigation.css';
 import { NavLink } from 'react-router-dom'
 
-function Navigation() {
+const Navigation:React.FC = () => {
   return (
     <nav className="navigation">
-
       <h2 className="navigation__title">Чаты</h2>
       <ul className="navigation__list">
         <li className="navigation__item">

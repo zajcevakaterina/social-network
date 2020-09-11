@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import './MessageHandler.css';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
+type MessageHandlerProps = {
+  onAddMessage(text: string): void, 
+  messageToEdit: string, 
+  onEditMessage(message:string): void,
+}
+
+const MessageHandler:React.FC<MessageHandlerProps> = ({ onAddMessage, messageToEdit, onEditMessage }) => {
   const [message, setMessage] = useState('')
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (messageToEdit) {
       onEditMessage(message)
@@ -15,7 +21,7 @@ function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
     }
   }
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
   }
 
@@ -27,8 +33,7 @@ function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
     <form className="message-handler" onSubmit={handleSubmit}>
       <textarea
         className="message-handler__textarea"
-        rows="4"
-        type="text"
+        rows={4}
         name="message"
         placeholder="Введите сообщение..."
         onChange={handleChange}
@@ -39,10 +44,10 @@ function MessageHandler({ onAddMessage, messageToEdit, onEditMessage }) {
   );
 }
 
-MessageHandler.propTypes = {
-  onAddMessage: PropTypes.func,
-  messageToEdit: PropTypes.string,
-  onEditMessage: PropTypes.func,
-}
+// MessageHandler.propTypes = {
+//   onAddMessage: PropTypes.func,
+//   messageToEdit: PropTypes.string,
+//   onEditMessage: PropTypes.func,
+// }
 
 export default MessageHandler;

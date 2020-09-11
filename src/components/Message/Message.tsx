@@ -1,9 +1,21 @@
 import React, { useContext } from 'react';
 import './Message.css';
 import { CurrentUserContext } from '../../contexts/CurrentUserContext';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-function Message({ authorName, authorId, avatar, text, likes, messageId, onEditClick, onDeleteClick, onLikeClick }) {
+type MessageProps = {
+  authorName: string, 
+  authorId: string, 
+  avatar: string, 
+  text: string,
+  likes: any[] | null | undefined,
+  messageId: string, 
+  onEditClick(messageId: string): void, 
+  onDeleteClick(messageId: string):  void, 
+  onLikeClick(messageId: string): void, 
+}
+
+const Message:React.FC<MessageProps> = ({ authorName, authorId, avatar, text, likes, messageId, onEditClick, onDeleteClick, onLikeClick }) => {
 
   const currentUser = useContext(CurrentUserContext)
 
@@ -11,15 +23,15 @@ function Message({ authorName, authorId, avatar, text, likes, messageId, onEditC
     onEditClick(messageId);
   }
 
-  const isLiked = likes && likes.some(item => item.id === currentUser.id);
-  const canEditAndDelete = authorId === currentUser.id;
+  const isLiked:boolean | null | undefined = likes && likes.some(item => item.id === currentUser.id);
+  const canEditAndDelete:boolean = authorId === currentUser.id;
 
   const handleDeleteClick = () => {
     onDeleteClick(messageId);
   }
 
   const handleLikeClick = () => {
-    onLikeClick(messageId, likes);
+    onLikeClick(messageId);
   }
 
   return (
@@ -43,19 +55,19 @@ function Message({ authorName, authorId, avatar, text, likes, messageId, onEditC
   );
 }
 
-Message.propTypes = {
-  author: PropTypes.object,
-  avatar: PropTypes.string,
-  text: PropTypes.string,
-  likes: PropTypes.oneOfType([
-    PropTypes.array,
-    PropTypes.number,
-    PropTypes.bool
-  ]),
-  messageId: PropTypes.string,
-  onEditClick: PropTypes.func,
-  onDeleteClick: PropTypes.func,
-  onLikeClick: PropTypes.func
-}
+// Message.propTypes = {
+//   author: PropTypes.object,
+//   avatar: PropTypes.string,
+//   text: PropTypes.string,
+//   likes: PropTypes.oneOfType([
+//     PropTypes.array,
+//     PropTypes.number,
+//     PropTypes.bool
+//   ]),
+//   messageId: PropTypes.string,
+//   onEditClick: PropTypes.func,
+//   onDeleteClick: PropTypes.func,
+//   onLikeClick: PropTypes.func
+// }
 
 export default Message;
